@@ -1,92 +1,64 @@
 import React from "react";
-import "./App.css";
+import { addTodo, toggle, remove } from "./actions";
 import { connect } from "react-redux";
-import { add, toggle} from "./actions"
-import styled from "styled-components"
+import styled from 'styled-components';
 
-const Button = styled.button`
 
-padding: 10px 20px;
-margin-left: 20px;
-margin-top: 10px;
-font-size: 16px;
-border-radius: 4px;
-`
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      Todos: [],
-      typeToDo: ""
-    };
+
+
+
+
+class App extends React.Component{
+  constructor(props){
+    super(props)
+    this.state ={
+      text: ""
+    }
   }
 
-  textChangeHandler = event => {
-    const textAdded = event.target.value;
+  textChangHandler = (event) =>{
+    const newText = event.target.value
     this.setState({
-      typeToDo: textAdded
-      
-    });
-    console.log(this.state.typeToDo)
-  };
-
-//add functions here
-  addTodo = (e) =>{
-    e.preventDefault();
-    this.setState({
- 
-      ...this.state,
-      Todos: [...this.state.Todos, {value: this.state.typeToDo, completed: false}],
-      typeToDo: ""
+      text:newText
     })
-    console.log(this.state.Todos)
-    this.props.add(this.state.Todos)
   }
 
-  toggle = (index) =>{
-    //create a toggle function for false
-   const currentTodo = this.state.Todos[index]
-    this.setState({})
-} 
-
-
-
-
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <h1>To do</h1>
-          {this.props.Todos.map((Todo, index) => {
-            return(
-              <>
-             <p onClick={()=>{toggle(index)}}>{Todo.value}</p>
-            <p>finished: {Todo.completed.toString()}</p>
-            </>
-            )
-          })}
-          <form onSubmit={(e)=> this.addTodo(e)}>
-            <input
-              value={this.state.typeToDo}
-              onChange={this.textChangeHandler}
-              type="text"
-            />
-            <Button>Add Todo</Button>
-          </form>
-        </header>
-      </div>
-    );
+  submitHandler = (event) =>{
+    event.preventDefault()
+    this.props.addTodo(this.state.text)
+    this.setState({
+      text:""
+    })
   }
-}
 
-const mapStateToProps = state => {
-  return {
-    Todos: state.Todos
-  };
+ 
+
+
+  render(){
+
+    
+
+  return (
+    <div className="App">
+      {this.props.todos.map(todo => {
+        
+        return <p onClick={()=>this.props.toggle(todo.id)} style={todo.completed ? {textDecoration: "line-through"}:null}>{todo.value}</p>;
+
+      })}
+    
+    <form onSubmit={(event)=>this.submitHandler(event)}>
+      <input value={this.state.text} onChange={this.textChangHandler} type="text"></input>
+      <button>add todo</button>
+    </form>
+    <button onClick={()=>{this.props.remove()}}>Delete</button>
+    </div>
+  );
 };
+}
+const mapStateToProps = reduxState => ({ todos: reduxState });
 
 export default connect(
   mapStateToProps,
-  {add,toggle}
+  { addTodo, toggle, remove }
 )(App);

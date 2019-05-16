@@ -1,19 +1,26 @@
 export const TOGGLE = "TOGGLE"
-export const ADD = "ADD"
+export const ADD_TODO = "ADD_TODO"
+export const REMOVE = "REMOVE"
+//add a todo
+let id = 1;
+
+export const addTodo = (newTodo) => ({
+    id: id++,
+    type: ADD_TODO,
+    completed: false,
+    newTodo: newTodo
+})
 
 
-export const add = (Todos) => {
-    return{
-      type: ADD,
-      payload: Todos
-    }
+//toggle todo
 
-  };
-  
-  export const toggle = (boolean) => {
-    return {
-      type: TOGGLE,
-      payload: boolean
- 
-    }
-  }
+export const toggle = (id) => ({
+    type: TOGGLE,
+    id:id
+})
+
+//delete completed Todos
+
+export const remove = () =>({
+    type: REMOVE
+})
